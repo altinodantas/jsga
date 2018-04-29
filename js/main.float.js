@@ -215,9 +215,9 @@ var z_data = [
   }
   
   var dots = {
-    x: [0],
-    y: [0],
-    z: [getF6Z(0, 0)],
+    x: [],
+    y: [],
+    z: [],
     mode: 'markers',
     type: 'scatter3d',
     name: '<i><b>dot</b></i>',
@@ -294,11 +294,11 @@ class GA {
         for (let i = 0; i < this.populationSize; i++) {
             this.population.push(randomSolution());
             
-            let tem_x = getF6XY(this.population[i].chromosome)[0];    
-            let tem_y = getF6XY(this.population[i].chromosome)[1];
-            dots['x'].push(tem_x);
-            dots['y'].push(tem_y);
-            dots['z'].push(getF6Z(tem_x,tem_y));
+            let temp_x = this.population[i].chromosome[0];    
+            let temp_y = this.population[i].chromosome[1];
+            dots['x'].push(temp_x);
+            dots['y'].push(temp_y);
+            dots['z'].push(getF6Z(temp_x,temp_y));
         }
     }
 
@@ -308,9 +308,7 @@ class GA {
             let fatherB = this.tournementK(3);
 
             if(Math.random() < this.crossoverRate){
-                let sons = this.onePointX(fatherA, fatherB);
-                this.offspring.push(sons[0]);
-                this.offspring.push(sons[1]);
+                this.offspring.push(this.onePointX(fatherA, fatherB));
             }else{
                 this.offspring.push(new Solution(fatherA.chromosome));
                 this.offspring.push(new Solution(fatherB.chromosome));
@@ -320,37 +318,29 @@ class GA {
     }
 
     onePointX(fatherA, fatherB){
-        let sons = [];
-        let chromosomeA = [];
-        let chromosomeB = [];
 
-        let cutPoint = Math.floor(Math.random() * fatherA.chromosome.length - 1) + 1;
+        let p = Math.random();
+        let newChromosome = [];
+        
+        newChromosome.push(( p * fatherA.chromosome[0] + fatherB.chromosome[0] * (1 - p)));
+        newChromosome.push(( p * fatherA.chromosome[1] + fatherB.chromosome[1] * (1 - p)));
 
-        for (let i = 0; i < fatherA.chromosome.length; i++) {
-            if (i < cutPoint) {
-                chromosomeA.push(fatherA.chromosome[i]);
-                chromosomeB.push(fatherB.chromosome[i]);
-            }else{
-                chromosomeA.push(fatherB.chromosome[i]);
-                chromosomeB.push(fatherA.chromosome[i]);
-            }
-        }    
-
-        sons.push(new Solution(chromosomeA));
-        sons.push(new Solution(chromosomeB));
-
-        return sons;
+        return new Solution(newChromosome);
     }
 
     mutation(){
         for (let i = 0; i < this.offspring.length; i++) {
             for (let j = 0; j < this.offspring[i].chromosome.length; j++) {
                 if (Math.random() < this.mutationRate) {
-                    if (this.offspring[i].chromosome[j] == 1) {
-                        this.offspring[i].chromosome[j] = 0;
-                    }else {
-                        this.offspring[i].chromosome[j] = 1;
-                    }
+                    
+                    let value = this.offspring[i].chromosome[j];
+
+                    value *= (Math.random() * 4) - 2;
+                    value = Math.max(value,100);
+                    value = Math.min(value,-100);
+
+                    this.offspring[i].chromosome[j] = value; 
+
                     this.offspring[i].evaluate();
                 }
             }
@@ -397,68 +387,17 @@ function orderPop(a,b){
 }
 
 function randomSolution(){
-   return new Solution(Array.from({length: 44}, () => Math.floor(Math.random() * 2)));
-}
-
-function evaluate(chromosome){
-    let fitness = 0.0;
-    chromosome.forEach(gene => {
-        fitness += gene;
-    });
-    return fitness;
+   return new Solution(Array.from({length: 2}, () => (Math.random() * 200) - 100));
 }
 
 function evaluateF6(chromosome){
-    let x = 0;
-    let y = 0;
+    let x = chromosome[0];
+    let y = chromosome[1];
     let xsqrdysqrd = 0;
-    let bound = chromosome.length / 2;
-		
-    let bin_x = []; 
-    let bin_y = [];
-    
-    for (let i = 0; i < bound; i++) {
-        bin_x[i] = chromosome[i];
-        bin_y[i] = chromosome[i + bound];
-    }
-    
-    for (let i = 0; i < bound; i++) {
-        x += bin_x[i] * Math.pow(2, bound - i - 1);
-        y += bin_y[i] * Math.pow(2, bound - i - 1);
-    }
-    
-    x = -100 + x * (200) / (Math.pow(2, bound) - 1);
-    y = -100 + y * (200) / (Math.pow(2, bound) - 1);
     
     xsqrdysqrd = x * x + y * y;
     
     return ((0.5 - (Math.pow(Math.sin(  Math.sqrt(xsqrdysqrd)),2) - 0.5) / Math.pow((1 + 0.001 * xsqrdysqrd), 2)));
-}
-
-function getF6XY(chromosome){
-    let x = 0;
-    let y = 0;
-    
-    let bound = chromosome.length / 2;
-		
-    let bin_x = []; 
-    let bin_y = [];
-    
-    for (let i = 0; i < bound; i++) {
-        bin_x[i] = chromosome[i];
-        bin_y[i] = chromosome[i + bound];
-    }
-    
-    for (let i = 0; i < bound; i++) {
-        x += bin_x[i] * Math.pow(2, bound - i - 1);
-        y += bin_y[i] * Math.pow(2, bound - i - 1);
-    }
-    
-    x = -100 + x * (200) / (Math.pow(2, bound) - 1);
-    y = -100 + y * (200) / (Math.pow(2, bound) - 1);
-    
-    let xy = [x,y];
-    return xy;
 }
 
 function runOneGeneration() {
@@ -469,7 +408,7 @@ function runOneGeneration() {
    
     count++;
    
-    if (count == 300) {
+    if (count == 400) {
         stopFunction();
         //getF6XY(ga.population[0].chromosome);
     }
@@ -480,35 +419,38 @@ function runOneGeneration() {
     let x,y;
 
     if(false){
-        x = getF6XY(ga.population[0].chromosome)[0];
-        y = getF6XY(ga.population[0].chromosome)[1];
+
+        x = ga.population[0].chromosome[0];
+        y = ga.population[0].chromosome[1];
+        
         dots['x'][0] = x;
         dots['y'][0] = y;
         dots['z'][0] = getF6Z(x,y);
-        Plotly.redraw('plot'); 
+        Plotly.redraw('plot');
     } else{
+
         for (let i = 0; i < ga.populationSize; i++) {
 
-            x = getF6XY(ga.population[i].chromosome)[0];
-            y = getF6XY(ga.population[i].chromosome)[1];
+            x = ga.population[i].chromosome[0];
+            y = ga.population[i].chromosome[1];
             
             dots['x'][i] = x;
             dots['y'][i] = y;
-            dots['z'][i] = getF6Z(x,y);    
-
+            dots['z'][i] = getF6Z(x,y);   
         }
-        Plotly.redraw('plot');
+        Plotly.redraw('plot'); 
     }
+
 }
 
 function stopFunction() {
     clearInterval(runningVar);
 }
 
-var ga = new GA(100, 0.05, 0.80);
+var ga = new GA(300, 0.15, 0.85);
 let count = 0;
 
 ga.initializePop();
 
-runningVar = setInterval(function(){ runOneGeneration() }, 10);
+runningVar = setInterval(function(){ runOneGeneration() }, 100);
 
