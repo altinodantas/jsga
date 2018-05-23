@@ -7,7 +7,7 @@ with the follow landscape:
 
 ![](https://github.com/altinodantas/jsga/blob/master/assets/img/multimodal.PNG)
 
-Optimize **function F6** consists of finding the values of *x* and *y* which archive the mininal score for *z*.
+Optimize **function F6** consists of finding values for *x* and *y* that archive the mininal score for *z*.
 
 ## Characteristics
  + Solution represented as binary vector with 44 bits, 22 for each variable *x* and *y*;
