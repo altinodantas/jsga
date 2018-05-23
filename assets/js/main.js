@@ -237,8 +237,6 @@ var z_data = [
   var layout = {
     title: 'F6 - Multimodal Function',
     autosize: true,
-    width: 900,
-    height: 600,
     margin: {
         l: 65,
         r: 50,
@@ -269,9 +267,12 @@ var z_data = [
 class Solution{
 
     constructor(chromosome) {
-        this.chromosome = chromosome;
+        this.chromosome = [];
+        chromosome.forEach(element => {
+            this.chromosome.push(element);    
+        });
         this.evaluate();
-      }
+    }
 
     evaluate(chromosome){
         this.fitness = evaluateF6(this.chromosome);
@@ -281,34 +282,43 @@ class Solution{
 
 class GA {
 
-    constructor(populationSize, mutationRate, crossoverRate){
+    constructor(populationSize, mutationRate, crossoverRate, max_generation, ktournament){
         this.populationSize = populationSize;
         this.mutationRate = mutationRate;
         this.crossoverRate = crossoverRate;
+        this.max_generation = max_generation;
+        this.ktournament = ktournament;
 
         this.population = [];
         this.offspring = [];
     }
 
     initializePop(){
+        
+        dots['x'] = [];
+        dots['y'] = [];
+        dots['z'] = [];
+
         for (let i = 0; i < this.populationSize; i++) {
             this.population.push(randomSolution());
             
-            let temp_x = this.population[i].chromosome[0];    
-            let temp_y = this.population[i].chromosome[1];
-            dots['x'].push(temp_x);
-            dots['y'].push(temp_y);
-            dots['z'].push(getF6Z(temp_x,temp_y));
+            let tem_x = getF6XY(this.population[i].chromosome)[0];    
+            let tem_y = getF6XY(this.population[i].chromosome)[1];
+            dots['x'].push(tem_x);
+            dots['y'].push(tem_y);
+            dots['z'].push(getF6Z(tem_x,tem_y));
         }
     }
 
     performCrossOver(){
         while (this.offspring.length < this.populationSize) {
-            let fatherA = this.tournementK(3);
-            let fatherB = this.tournementK(3);
+            let fatherA = this.tournementK(this.ktournament);
+            let fatherB = this.tournementK(this.ktournament);
 
             if(Math.random() < this.crossoverRate){
-                this.offspring.push(this.onePointX(fatherA, fatherB));
+                let sons = this.onePointX(fatherA, fatherB);
+                this.offspring.push(sons[0]);
+                this.offspring.push(sons[1]);
             }else{
                 this.offspring.push(new Solution(fatherA.chromosome));
                 this.offspring.push(new Solution(fatherB.chromosome));
@@ -318,29 +328,37 @@ class GA {
     }
 
     onePointX(fatherA, fatherB){
+        let sons = [];
+        let chromosomeA = [];
+        let chromosomeB = [];
 
-        let p = Math.random();
-        let newChromosome = [];
-        
-        newChromosome.push(( p * fatherA.chromosome[0] + fatherB.chromosome[0] * (1 - p)));
-        newChromosome.push(( p * fatherA.chromosome[1] + fatherB.chromosome[1] * (1 - p)));
+        let cutPoint = Math.floor(Math.random() * fatherA.chromosome.length - 1) + 1;
 
-        return new Solution(newChromosome);
+        for (let i = 0; i < fatherA.chromosome.length; i++) {
+            if (i < cutPoint) {
+                chromosomeA.push(fatherA.chromosome[i]);
+                chromosomeB.push(fatherB.chromosome[i]);
+            }else{
+                chromosomeA.push(fatherB.chromosome[i]);
+                chromosomeB.push(fatherA.chromosome[i]);
+            }
+        }    
+
+        sons.push(new Solution(chromosomeA));
+        sons.push(new Solution(chromosomeB));
+
+        return sons;
     }
 
     mutation(){
         for (let i = 0; i < this.offspring.length; i++) {
             for (let j = 0; j < this.offspring[i].chromosome.length; j++) {
                 if (Math.random() < this.mutationRate) {
-                    
-                    let value = this.offspring[i].chromosome[j];
-
-                    value *= (Math.random() * 4) - 2;
-                    value = Math.max(value,100);
-                    value = Math.min(value,-100);
-
-                    this.offspring[i].chromosome[j] = value; 
-
+                    if (this.offspring[i].chromosome[j] == 1) {
+                        this.offspring[i].chromosome[j] = 0;
+                    }else {
+                        this.offspring[i].chromosome[j] = 1;
+                    }
                     this.offspring[i].evaluate();
                 }
             }
@@ -387,17 +405,68 @@ function orderPop(a,b){
 }
 
 function randomSolution(){
-   return new Solution(Array.from({length: 2}, () => (Math.random() * 200) - 100));
+   return new Solution(Array.from({length: 44}, () => Math.floor(Math.random() * 2)));
+}
+
+function evaluate(chromosome){
+    let fitness = 0.0;
+    chromosome.forEach(gene => {
+        fitness += gene;
+    });
+    return fitness;
 }
 
 function evaluateF6(chromosome){
-    let x = chromosome[0];
-    let y = chromosome[1];
+    let x = 0;
+    let y = 0;
     let xsqrdysqrd = 0;
+    let bound = chromosome.length / 2;
+		
+    let bin_x = []; 
+    let bin_y = [];
+    
+    for (let i = 0; i < bound; i++) {
+        bin_x[i] = chromosome[i];
+        bin_y[i] = chromosome[i + bound];
+    }
+    
+    for (let i = 0; i < bound; i++) {
+        x += bin_x[i] * Math.pow(2, bound - i - 1);
+        y += bin_y[i] * Math.pow(2, bound - i - 1);
+    }
+    
+    x = -100 + x * (200) / (Math.pow(2, bound) - 1);
+    y = -100 + y * (200) / (Math.pow(2, bound) - 1);
     
     xsqrdysqrd = x * x + y * y;
     
     return ((0.5 - (Math.pow(Math.sin(  Math.sqrt(xsqrdysqrd)),2) - 0.5) / Math.pow((1 + 0.001 * xsqrdysqrd), 2)));
+}
+
+function getF6XY(chromosome){
+    let x = 0;
+    let y = 0;
+    
+    let bound = chromosome.length / 2;
+		
+    let bin_x = []; 
+    let bin_y = [];
+    
+    for (let i = 0; i < bound; i++) {
+        bin_x[i] = chromosome[i];
+        bin_y[i] = chromosome[i + bound];
+    }
+    
+    for (let i = 0; i < bound; i++) {
+        x += bin_x[i] * Math.pow(2, bound - i - 1);
+        y += bin_y[i] * Math.pow(2, bound - i - 1);
+    }
+    
+    x = -100 + x * (200) / (Math.pow(2, bound) - 1);
+    y = -100 + y * (200) / (Math.pow(2, bound) - 1);
+    
+    let xy = [x,y];
+    return xy;
 }
 
 function runOneGeneration() {
@@ -408,49 +477,76 @@ function runOneGeneration() {
    
     count++;
    
-    if (count == 400) {
+    if (count == ga.max_generation) {
         stopFunction();
-        //getF6XY(ga.population[0].chromosome);
     }
-
-    //console.log(ga.average());
-    console.log(ga.population[0].fitness)
 
     let x,y;
 
-    if(false){
-
-        x = ga.population[0].chromosome[0];
-        y = ga.population[0].chromosome[1];
+    for (let i = 0; i < ga.populationSize; i++) {
+        x = getF6XY(ga.population[i].chromosome)[0];
+        y = getF6XY(ga.population[i].chromosome)[1];
         
-        dots['x'][0] = x;
-        dots['y'][0] = y;
-        dots['z'][0] = getF6Z(x,y);
-        Plotly.redraw('plot');
-    } else{
-
-        for (let i = 0; i < ga.populationSize; i++) {
-
-            x = ga.population[i].chromosome[0];
-            y = ga.population[i].chromosome[1];
-            
-            dots['x'][i] = x;
-            dots['y'][i] = y;
-            dots['z'][i] = getF6Z(x,y);   
-        }
-        Plotly.redraw('plot'); 
+        dots['x'][i] = x;
+        dots['y'][i] = y;
+        dots['z'][i] = getF6Z(x,y);    
     }
 
+    Plotly.redraw('plot');
+    x = getF6XY(ga.population[0].chromosome)[0];
+    y = getF6XY(ga.population[0].chromosome)[1];
+    let log = "<b>Gen:</b> " + count + " <br><b>x</b>: " + x + " <br><b>y</b>: " + y + " <br><b>z:</b> " + getF6Z(x,y);
+
+    $("#demo").html(log);
 }
 
 function stopFunction() {
     clearInterval(runningVar);
 }
 
-var ga = new GA(300, 0.15, 0.85);
+let ga;
 let count = 0;
+let runningVar;
 
-ga.initializePop();
+function solve(){
 
-runningVar = setInterval(function(){ runOneGeneration() }, 100);
+    stopFunction();
+
+    let pop = $('#population_size').val();
+    let mut = $('#mutation_rate').val();
+    let cx = $('#crossover_rate').val();
+    let maxg = $('#max_generations').val();
+    let delay = $('#delay').val();
+    let ktournament = $('#k_tournament').val();
+
+    if(!pop){
+        pop = 100;
+    }
+    if(!mut){
+        mut = 0.05;
+    }
+    if(!cx){
+        cx = 0.8;
+    }
+    if(!maxg){
+        maxg = 200;
+    }
+
+    if(!ktournament){
+        ktournament = 3;
+    }
+
+    if(!delay){
+        delay = 100;
+    }
+
+    ga = new GA(pop, mut, cx, maxg, ktournament);
+    count = 0;
+
+    ga.initializePop();
+
+    runningVar = setInterval(function(){ runOneGeneration() }, delay);
+}
+
+
 
