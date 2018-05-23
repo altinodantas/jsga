@@ -4,6 +4,7 @@ is a simple example on how to optimize a multimodal function by using a canonica
 ![](https://latex.codecogs.com/svg.latex?f(x,y)=0.5&plus;\frac{\sin^2(\sqrt{x^2&space;&plus;&space;y^2})-0.5}{[1&plus;0.001&space;\cdot&space;(x^2&space;&plus;&space;y^2)]^2})
 
 with the follow landscape:
+
 ![](https://github.com/altinodantas/jsga/blob/master/assets/img/multimodal.PNG)
 
 ## Characteristics
