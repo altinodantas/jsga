@@ -17,3 +17,7 @@ The page presents some parameters through which one may notices their impact on 
  - Crossover rate
  - Maximal of generations
  - K-tournament
+
+#### External libs
+  - [jQuery](http://jquery.com)
+  - [Plotly](https://plot.ly/javascript/)
