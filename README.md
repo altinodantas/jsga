@@ -8,7 +8,7 @@ is a simple example on how to optimize a multimodal function by using a canonica
  - One-point crossover;
  - Bit flip mutation;
  - Parents selection based on k tournament;
- - Merge population and offspring based on total ranking;
+ - Merging population and offspring based on total ranking;
  
 ## Parameters
 The page presents some parameters through which one may notices their impact on the algorithm behavior.  
