@@ -409,6 +409,7 @@ function evaluateF6(chromosome){
 }
 
 function runOneGeneration() {
+    
     ga.performCrossOver();
     ga.mutation();
     ga.mergePop();
