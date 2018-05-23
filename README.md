@@ -16,7 +16,7 @@ The page presents some parameters through which one may notices their impact in 
  - *Matation rate:* **0.05**
  - *Crossover rate:* **0.80**
  - *Maximal of generations:* **200**
- - *K-tournament* **3**
+ - *K-tournament:* **3**
 
 #### External libs
   - [jQuery](http://jquery.com)
