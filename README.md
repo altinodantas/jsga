@@ -4,7 +4,7 @@ is a simple example on how to optimize a multimodal function by using a canonica
 ![](https://latex.codecogs.com/svg.latex?f(x,y)=0.5&plus;\frac{\sin^2(\sqrt{x^2&space;&plus;&space;y^2})-0.5}{[1&plus;0.001&space;\cdot&space;(x^2&space;&plus;&space;y^2)]^2})
 
 ## Characteristics
- - Solution represented as binary vector with 44 bits, 22 for each variable;
+ - Solution represented as binary vector with 44 bits, 22 for each variable x and y;
  - One-point crossover;
  - Bit flip mutation;
  - Parents selection based on k tournament;
