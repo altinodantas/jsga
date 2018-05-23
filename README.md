@@ -12,11 +12,11 @@ is a simple example on how to optimize a multimodal function by using a canonica
  
 ## Parameters
 The page presents some parameters through which one may notices their impact in the algorithm behavior. Such parameters and their default values are:  
- - *Population size* 100 
- - *Matation rate* 0.05
- - *Crossover rate* 0.80
- - *Maximal of generations* 200
- - *K-tournament* 3
+ - *Population size:* **100** 
+ - *Matation rate:* **0.05**
+ - *Crossover rate:* **0.80**
+ - *Maximal of generations:* **200**
+ - *K-tournament* **3**
 
 #### External libs
   - [jQuery](http://jquery.com)
