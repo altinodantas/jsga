@@ -259,7 +259,7 @@ var z_data = [
   
   function getF6Z(x, y) {
     let xsqrdysqrd = x * x + y * y;
-    return ((0.5 + (Math.pow(Math.sin(Math.sqrt(xsqrdysqrd)), 2) - 0.5) / Math.pow((1 + 0.001 * xsqrdysqrd), 2)));
+    return +((0.5 + (Math.pow(Math.sin(Math.sqrt(xsqrdysqrd)), 2) - 0.5) / Math.pow((1 + 0.001 * xsqrdysqrd), 2))).toFixed(5);
   }
 
 /* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
@@ -435,12 +435,12 @@ function evaluateF6(chromosome){
         y += bin_y[i] * Math.pow(2, bound - i - 1);
     }
     
-    x = -100 + x * (200) / (Math.pow(2, bound) - 1);
-    y = -100 + y * (200) / (Math.pow(2, bound) - 1);
+    x = (-100 + x * (200) / (Math.pow(2, bound) - 1)).toFixed(5);
+    y = (-100 + y * (200) / (Math.pow(2, bound) - 1)).toFixed(5);
     
     xsqrdysqrd = x * x + y * y;
     
-    return ((0.5 - (Math.pow(Math.sin(  Math.sqrt(xsqrdysqrd)),2) - 0.5) / Math.pow((1 + 0.001 * xsqrdysqrd), 2)));
+    return +((0.5 - (Math.pow(Math.sin(  Math.sqrt(xsqrdysqrd)),2) - 0.5) / Math.pow((1 + 0.001 * xsqrdysqrd), 2))).toFixed(5);
 }
 
 function getF6XY(chromosome){
@@ -462,8 +462,8 @@ function getF6XY(chromosome){
         y += bin_y[i] * Math.pow(2, bound - i - 1);
     }
     
-    x = -100 + x * (200) / (Math.pow(2, bound) - 1);
-    y = -100 + y * (200) / (Math.pow(2, bound) - 1);
+    x = (-100 + x * (200) / (Math.pow(2, bound) - 1));
+    y = (-100 + y * (200) / (Math.pow(2, bound) - 1));
     
     let xy = [x,y];
     return xy;
@@ -477,7 +477,8 @@ function runOneGeneration() {
    
     count++;
    
-    if (count == ga.max_generation) {
+    if (count == ga.max_generation || ga.population[0].fitness == 1) {
+        console.log(ga.population[0].fitness);
         stopFunction();
     }
 
