@@ -62,37 +62,59 @@
 				</div>
 				
 				<hr />	-->
-				<p align="center"><b>Algorithm</b></p>
-				  <div class="form-group">
-					<label for="alphaInput">Population size</label>
-					<input type="text" class="form-control" id="population_size" placeholder="100">
-				  </div>
-				  
-				  <div class="form-group">
-					<label for="epsilonInput">Mutation rate</label>
-					<input type="text" class="form-control" id="mutation_rate" placeholder="0.05">
-				  </div>
-				  
-				  <div class="form-group">
-					<label for="maxIntInput">Crossover rate</label>
-					<input type="text" class="form-control" id="crossover_rate" placeholder="0.80">
-				  </div>
-				  
-				  <div class="form-group">
-					<label for="delayInput">Max. of generations</label>
-					<input type="text" class="form-control" id="max_generations" placeholder="200">
-				  </div>
-					
-					<div class="form-group">
-						<label for="delayInput">K-tournament</label>
-						<input type="text" class="form-control" id="k_tournament" placeholder="3">
-					</div>
-					<p align="center"><b>Animation</b></p>
-					<div class="form-group">
-							<label for="delayInput">Delay</label>
-							<input type="text" class="form-control" id="delay" placeholder="100">
+				<center><b>Algorithm</b></center>
+				<div class="row" id="content">
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+						<label for="alphaInput">Population size</label>
+						<input type="text" class="form-control" id="population_size" placeholder="100">
 						</div>
-					
+					</div>
+				
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+						<label for="epsilonInput">Mutation rate</label>
+						<input type="text" class="form-control" id="mutation_rate" placeholder="0.05">
+						</div>
+					</div>
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<label for="maxIntInput">Crossover rate</label>
+							<input type="text" class="form-control" id="crossover_rate" placeholder="0.80">
+							</div>
+					</div>
+
+					<div class="col-12 col-md-6">
+						<div class="form-group">
+							<label for="delayInput">Max. Generations</label>
+							<input type="text" class="form-control" id="max_generations" placeholder="200">
+							</div>
+					</div>
+
+					<div class="col-12 col-md-6">	
+						<div class="form-group">
+							<label for="delayInput">K-tournament</label>
+							<input type="text" class="form-control" id="k_tournament" placeholder="3">
+						</div>
+					</div>
+				</div>
+					<center><b>Animation</b></center>
+					<div class="row" id="content">
+						<div class="col-12 col-md-6">
+							<div class="form-group">
+								<label for="delayInput">Delay</label>
+								<input type="text" class="form-control" id="delay" placeholder="100">
+							</div>
+						</div>
+
+						<div class="col-12 col-md-6">
+							<div class="form-group">
+								<label for="delayInput">Delay</label>
+								<input type="text" class="form-control" id="delay" placeholder="100">
+							</div>
+						</div>
+
+					</div>
 				  <button type="button" class="btn btn-primary" onclick="solve()">Solve</button>
 				  <br />
 				</form>
