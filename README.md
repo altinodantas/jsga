@@ -18,7 +18,7 @@ By considering above information, optimize **function F6** consists of finding v
  + Merging population and offspring based on total ranking;
  
 ## Parameters
-The page presents some parameters through which one may notices their impact in the algorithm behavior. Such parameters and their default values are:  
+The page presents some parameters through which one may notice their impact in the algorithm behavior. Such parameters and their default values are:  
  - *Population size:* **100** 
  - *Mutation rate:* **0.05**
  - *Crossover rate:* **0.80**
